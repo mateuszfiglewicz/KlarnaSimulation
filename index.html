@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mock Klarna HPP</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    h1 { margin-bottom: 20px; }
+    button {
+      padding: 12px 24px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .success { background-color: #28a745; color: white; }
+    .cancel { background-color: #ffc107; color: black; }
+    .fail { background-color: #dc3545; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Mock Klarna Hosted Payment Page</h1>
+  <p>Select a status to simulate Klarna redirect:</p>
+
+  <button class="success" onclick="redirect('authorized')">Simulate Success</button>
+  <button class="cancel" onclick="redirect('cancelled')">Simulate Cancel</button>
+  <button class="fail" onclick="redirect('failed', 'payment_declined')">Simulate Failure</button>
+
+  <script>
+    function redirect(status, errorCode) {
+      const baseUrl = 'computopmerchantapp://klarna-redirect';
+      const params = new URLSearchParams();
+
+      params.set('status', status);
+
+      if (status === 'authorized') {
+        params.set('authorization_token', 'mock_token_123');
+      }
+
+      if (errorCode) {
+        params.set('error_code', errorCode);
+      }
+
+      const finalUrl = `${baseUrl}?${params.toString()}`;
+      window.location.href = finalUrl;
+    }
+  </script>
+</body>
+</html>
