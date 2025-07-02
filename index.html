@@ -18,6 +18,7 @@
     .success { background-color: #28a745; color: white; }
     .cancel { background-color: #ffc107; color: black; }
     .fail { background-color: #dc3545; color: white; }
+    .url-display { margin-top: 30px; font-weight: bold; word-break: break-all; }
   </style>
 </head>
 <body>
@@ -28,11 +29,18 @@
   <button class="cancel" onclick="redirect('cancelled')">Simulate Cancel</button>
   <button class="fail" onclick="redirect('failed', 'payment_declined')">Simulate Failure</button>
 
-  <script>
-    function redirect(status, errorCode) {
-      const baseUrl = 'computopmerchantapp://klarna-redirect';
-      const params = new URLSearchParams();
+  <div class="url-display" id="displayRedirectUrl"></div>
 
+  <script>
+    // Read redirectUrl from query params
+    const queryParams = new URLSearchParams(window.location.search);
+    const redirectUrl = decodeURIComponent(queryParams.get('redirectUrl') || 'computopmerchantapp://klarna-redirect');
+
+    // Show it on the page
+    document.getElementById('displayRedirectUrl').innerText = 'Redirect URL: ' + redirectUrl;
+
+    function redirect(status, errorCode) {
+      const params = new URLSearchParams();
       params.set('status', status);
 
       if (status === 'authorized') {
@@ -43,7 +51,7 @@
         params.set('error_code', errorCode);
       }
 
-      const finalUrl = `${baseUrl}?${params.toString()}`;
+      const finalUrl = `${redirectUrl}?${params.toString()}`;
       window.location.href = finalUrl;
     }
   </script>
